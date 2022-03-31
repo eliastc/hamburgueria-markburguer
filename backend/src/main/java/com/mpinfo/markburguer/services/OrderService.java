@@ -20,14 +20,14 @@ import com.mpinfo.markburguer.repositories.ProductRepository;
 public class OrderService {
 	
 	@Autowired
-	private OrderRepository repository;
+	private OrderRepository orderRepository;
 	
 	@Autowired
 	private ProductRepository productRepository;
 
 	@Transactional(readOnly = true)
 	public List<OrderDTO> findAll() {
-		List<Order> list = repository.findOrdersWithProductsIgnoreCase();
+		List<Order> list = orderRepository.findOrdersWithProductsIgnoreCase();
 		return list.stream().map(x -> new OrderDTO(x)).collect(Collectors.toList());
 	}
 	
@@ -39,15 +39,15 @@ public class OrderService {
 			Product product = productRepository.getById(p.getId());
 			order.getProducts().add(product);
 		}
-		order = repository.save(order);
+		order = orderRepository.save(order);
 		return new OrderDTO(order);
 	}
 	
 	@Transactional
 	public OrderDTO setDelivered(Long id) {
-		Order order = repository.getById(id);
+		Order order = orderRepository.getById(id);
 		order.setStatus(OrderStatus.DELIVERED);
-		order = repository.save(order);
+		order = orderRepository.save(order);
 		return new OrderDTO(order);		
 	}
 }
